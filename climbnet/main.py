@@ -50,7 +50,7 @@ def save_positions():
     #print(position_ohe)
     print(grade_output)
 
-    return render_template('index.html', pred=grade_output)# jsonify({'prediction': grade_output}) #
+    return render_template('index.html', pred=grade_output)
     #return jsonify({'status': 'success', 'data': selected_positions})
 
 @app.route('/api/get-positions', methods=['GET'])
