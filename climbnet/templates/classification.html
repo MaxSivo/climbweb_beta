@@ -5,20 +5,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MoonBoard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Orbitron">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            background-color: #F5F7F8;
+            color: #45474B;
+            font-family: Arial, sans-serif;
+        }
+
+        .nav-buttons {
+            position: absolute;
+            top: 20px; /* Adjust this value to increase/decrease space from the top */
+            left: 20px; /* Space from the left edge */
+            font-size: 20px;
+        }
+
+        .nav-buttons a {
+            background-color: #F5F7F8; /* Button color */
+            color: #45474B;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 5px; /* Space between buttons */
+        }
+
+        .predicted-grade {
+            margin-top: 20px;
+            margin-bottom: 25px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            color: #45474B;
+        }
+
+        .export-button {
+        display: block;
+        margin: 0 auto;
+        margin-top: 25px;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-weight: bold;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        background-color:#45474B;/* Customize the button color as needed */
+        color: #F5F7F8;
+        cursor: pointer;
+        }
+
+        .export-button:hover {
+            background-color: #d5d522; /* Customize the hover color as needed */
+        }
+
+        .title {
+            margin-bottom: -20px;
+            margin-top: 100px;
+            text-align: center;
+            font-size: 75px;
+            color: #d5d522;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 20px;
+            color: #d5d522;
+        }
+
+        .constraints {
+            position: absolute;
+            font-weight: bold;
+            font-size: 20px;
+            top: 310px;
+            left: 20px;
+            background-color: #45474B;
+            padding: 15px;
+            border-radius: 10px;
+            width: 250px; /* Adjust width as needed */
+        }
+
+        .constraints ul {
+            list-style-type: disc;
+            padding-left: 20px; /* Adjust padding for list items */
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
-    <h2>Predicted grade: {{ pred }}</h2> 
+
+    <div class="nav-buttons">
+        <a class="button" href="{{ url_for('index') }}">Home</a>
+        <a class="button" href="{{ url_for('generator') }}">Generator</a>
+    </div>
+    <h1 class="title"> Moonboard AI </h1>
+    <h4 class="subtitle"> Click on the holds to create a climb</h4>
+    <!-- <div class="constraints">
+        <p>Constraints:</p>
+        <ul>
+            <li>15 hold maximum</li>
+            <li>3 hold minimum</li>
+            <li>Climb must end at the top row</li>
+        </ul>
+    </div> -->
     <div class="matrix-container">
+        <button onclick="exportPositions()" class="export-button">Grade Climb</button>
+        <div class="predicted-grade">Predicted grade: {{ pred }}</div>
         <div class="image-container">
             <img src="{{ url_for('static', filename='moonboard2016Background.jpg') }}" alt="MoonBoard" class="moonboard-image">
             <div class="grid-container" id="grid-container">
                 <!-- Grid items will be added dynamically by JavaScript -->
             </div>
         </div>
-        <button onclick="exportPositions()" style="margin-top: 20px;">Export Positions</button>
     </div>
-    
+        
     <script>
         const rows = 18;
         const cols = 11;
@@ -93,6 +194,8 @@
 
         const selectedPositions = [];
         
+        let firstSelected = null; // Track the first selected hold
+
         function handleCellClick(rowIndex, colIndex) {
             if (!matrix[rowIndex][colIndex].selectable) return;
 
@@ -108,15 +211,33 @@
                 matrix[rowIndex][colIndex].selected = false;
                 const cell = document.getElementById(`cell-${rowIndex}-${colIndex}`);
                 cell.style.backgroundColor = 'transparent';
+                cell.style.opacity = '1'; // Reset opacity when deselected
                 const index = selectedPositions.findIndex(pos => pos.row === rowIndex && pos.col === colIndex);
                 if (index !== -1) selectedPositions.splice(index, 1);
+
+                // Update the firstSelected if the deselected cell was the first hold
+                if (firstSelected && firstSelected.row === rowIndex && firstSelected.col === colIndex) {
+                    firstSelected = selectedPositions[0] || null;
+                }
             } else {
+                // Set the firstSelected only if it hasn't been set yet
+                if (!firstSelected) {
+                    if (rowIndex < 10) {
+                        alert('The first hold must be at or below the 8th row.');
+                        return;
+                    }
+                    firstSelected = { row: rowIndex, col: colIndex };
+                }
+
                 matrix[rowIndex][colIndex].selected = true;
                 const cell = document.getElementById(`cell-${rowIndex}-${colIndex}`);
-                cell.style.backgroundColor = totalSelected === 0 ? 'green' : (totalSelected === 14 ? 'red' : 'blue');
+                cell.style.backgroundColor = 'blue'; // Set the color to blue
+                cell.style.opacity = '0.5'; // Set opacity to 50% when selected
                 selectedPositions.push({ row: rowIndex, col: colIndex });
             }
         }
+
+
 
         function exportPositions() {
             if (selectedPositions.length < 4) {
