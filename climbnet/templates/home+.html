@@ -47,24 +47,25 @@
       border: none;
       text-decoration: none;
     }
-    .centered-text-container {
-      width: fit-content;
-      max-width: 95%;
-      margin: 0 0 200px 10%;
-      text-align: left;
+    .content-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 200px;
     }
     .intro-text {
       font-size: 25px;
       font-weight: bold;
       color: #2e3338;
       margin: 20px 0;
-      text-align: left;
+      text-align: center;
     }
     .bullet-list {
       list-style: disc;
       padding-left: 1.5em;
       margin: 0;
       text-align: left;
+      width: fit-content;
     }
     .bullet-text {
       color: #2e3338;
@@ -83,7 +84,7 @@
   <div class="w3-container w3-center">
     <p class="logo-text">Moonboard AI</p>
 
-    <div class="centered-text-container">
+    <div class="content-container">
       <p class="intro-text">Welcome to MoonboardAI.</p>
       <ul class="bullet-list">
         <li class="bullet-text">Choose either the generator or classifier tool.</li>
