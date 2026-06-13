@@ -48,20 +48,28 @@
       text-decoration: none;
     }
     .centered-text-container {
-      width: 50%;
-      margin: 0 auto;
-      text-align: center;
-      margin-bottom: 200px; /* Reduced margin to push content up */
+      width: fit-content;
+      max-width: 95%;
+      margin: 0 0 200px 10%;
+      text-align: left;
     }
-    .centered-text {
+    .intro-text {
       font-size: 25px;
       font-weight: bold;
-      color: #2e3338; 
+      color: #2e3338;
       margin: 20px 0;
+      text-align: left;
+    }
+    .bullet-list {
+      list-style: disc;
+      padding-left: 1.5em;
+      margin: 0;
+      text-align: left;
     }
     .bullet-text {
-      color: #2e3338; 
+      color: #2e3338;
       font-size: 16px;
+      white-space: nowrap;
     }
     .button-container {
       text-align: center;
@@ -76,13 +84,13 @@
     <p class="logo-text">Moonboard AI</p>
 
     <div class="centered-text-container">
-      <p class="centered-text">
-        Welcome to MoonboardAI. 
+      <p class="intro-text">Welcome to MoonboardAI.</p>
+      <ul class="bullet-list">
         <li class="bullet-text">Choose either the generator or classifier tool.</li>
         <li class="bullet-text">The classifier will allow you to create your own customizable route and then rate its difficulty.</li>
         <li class="bullet-text">Our generator tool will allow you to generate new climbs based on a set difficulty.</li>
         <li class="bullet-text">You can use this tool to help set moonboard climbs and suggest accurate grades.</li>
-      </p>
+      </ul>
       <div class="button-container">
         <a href="{{ url_for('classification') }}" class="w3-button w3-button-custom w3-margin-right">Grade Classifier</a>
         <a href="{{ url_for('generator') }}" class="w3-button w3-button-custom">Climb Generator</a>
